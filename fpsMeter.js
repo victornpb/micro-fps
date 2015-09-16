@@ -5,15 +5,13 @@
  * @this {Object} this Object containig other values, like average jitter, timestamps, etc
  */
 
-
-
 /**
  * FPS Meter - Returns a function that is used to compute the framerate without the overhead of updating the DOM every frame.
- * @author Victor B - www.vitim.us
+ * @author Victor B - www.vitim.us - github.com/victornpb/fpsMeter
  * @param {callback} fpsCallback Function called on every DOM update
  * @param {number} refresh Updates per second of the DOM
  * @param {element} elm DOM Element to write the framerate
- * @return {function} Returns a function that will be called inside the loop
+ * @returns {function} Returns a function that will be called inside the loop
  */
 function fpsMeter(fpsCallback, refresh, elm){
     //var elm;             //element
