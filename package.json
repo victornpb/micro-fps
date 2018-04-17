@@ -1,6 +1,6 @@
 {
   "name": "micro-fps",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A super lightweight fps meter, with near zero overhead",
   "main": "dist/cjs/index.js",
   "browser": "dist/umd/microFps.js",
