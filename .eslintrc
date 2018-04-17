@@ -1,3 +1,16 @@
 {
-  "extends": "devine"
+  "parser": "babel-eslint",
+  "extends": ["eslint:recommended", "google"],
+  "rules": {
+    "max-len": "off"
+  },
+  "env": {
+    "browser": true,
+    "jest/globals": true
+  },
+
+  "plugins": [
+    "jest"
+  ]
+
 }
