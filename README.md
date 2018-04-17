@@ -14,6 +14,8 @@ But why not a class? Last time I checked, accessing instance properties was slow
 
 ### Usage
 
+JS fiddle Example: https://jsfiddle.net/Victornpb/g8pra2a6/
+
 ```js
 import microFps from 'micro-fps';
 
