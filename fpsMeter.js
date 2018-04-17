@@ -1,93 +1,81 @@
+
 /**
- * This callback is displayed as a global member.
+ * @typedef {function(FpsInfo)} fpsCallback
  * @callback fpsCallback
- * @param {number} fps The current frames per second
- * @this {Object} this Object containig other values, like average jitter, timestamps, etc
+ * @param {FpsInfo} fps Fps info object
+ */
+
+ /**
+ * @typedef {Object} FpsInfo
+ * @property {number} fps The calculated frames per second
+ * @property {number} jitter The absolute difference since the last calculated fps
+ * @property {number} elapsed Milliseconds ellapsed since the last computation
+ * @property {number} frames Number of frames since the last computation
+ * @property {number} trigger Next computation will happen at this amount of frames
  */
 
 /**
  * FPS Meter - Returns a function that is used to compute the framerate without the overhead of updating the DOM every frame.
+ * @param {fpsCallback} callback Callback fired every time the FPS is computed
+ * @param {number} [refreshRate=1] Refresh rate which the fps is computed and the callback is fired (0 to compute every frame, not recommended)
+ * @returns {function} Returns a function that should be called on every the loop tick
  * @author Victor B - www.vitim.us - github.com/victornpb/fpsMeter
- * @param {callback} fpsCallback Function called on every DOM update
- * @param {number} refresh Updates per second of the DOM
- * @param {element} elm DOM Element to write the framerate
- * @returns {function} Returns a function that will be called inside the loop
  */
-function fpsMeter(fpsCallback, refresh, elm){
-    //var elm;             //element
-    //var refresh;         //refresh every x seconds
-    
-    var frameCount = 0,    //number of frames since last computation
-        trigger = 1;       //compute frame rate every `x` frames (calculated on the go)
-    
-    var prev = 0; //previous timestamp
-    
-    var prevFps = 0; //previous fps value
-    var jitter = 0;  //computed jitter (exp avg)
-    
-    return function(){
-        if(++frameCount > trigger){
-            
-            var now = Date.now();
-            if(prev===0) prev = now;
-            var elapsed = now - prev;
-            
-            if(elapsed>0){
-                //compute fps
-                var fps = (1000/(elapsed/frameCount))<<0;
-                
-                //compute jitter
-                jitter = (jitter+Math.abs(prevFps-fps))/2;
-                
-                //move the trigger value exponentialy to match the current refresh rate.
-                trigger = ((trigger*0.5)+((fps*refresh)*0.5))<<0;
-                
-                //dispatch callback
-                if(fpsCallback){
-                    fpsCallback.call({ 
-                        fps: fps,
-                        jitter: jitter,
-                        now: now,
-                        previousTimestamp: prev,
-                        elapsed: elapsed,
-                        frameCount: frameCount,
-                        triggerRate: trigger,  
-                    }, fps);
-                }
-                if(elm) elm.innerHTML = fps;
-                
-                prev = now;
-                prevFps = fps;
-                frameCount = 0;
-                
-                return true;
-            }
-            else{
-                trigger *= 2;                
-            }
-        }
-    }
-}
+function createFpsMeter(callback, refreshRate = 1) {
 
-/* Example
-    
-    var f = fpsMeter(null, 4, fpsDiv);
-    
-    //or
-    
-    var f = fpsMeter(function(fps){
-        
-        console.log("FPS:"+this.fps+" Jitter:"+this.jitter);
-        
-        fpsDiv.innerHTML = fps;
-    }, 4);
-    
-    
-    //game loop
-    setInterval(function(){
-    
-        f();
-        //do stuff
-    
-    }, 1);
-*/
+	if (typeof callback !== 'function') throw new Error('Callback is not a function');
+	if (typeof refreshRate !== 'number') throw new Error('refreshRate should be a number! e.g. 2 (fps)');
+
+	/** number of frames since last computation */
+	let frames = 0;
+	/** compute fps at this amount of frames (it will try to match the refresh rate) */
+	let trigger = 0;
+
+	/** previous timestamp */
+	let lastTimestamp = 0;
+
+	/** last computed fps value */
+	let lastFps = 0;
+	/** computed jitter */
+	let jitter = 0;
+
+	// use performance.now() or fallback to Date.now() only check on initialization
+	const millis = ('performance' in window && 'now' in window.performance) ? performance.now.bind(performance) : Date.now.bind(Date);
+
+	return function fpsMeterTick() {
+		if (++frames > trigger) {
+			const now = millis();
+			if (lastTimestamp === 0) lastTimestamp = now;
+			const elapsed = now - lastTimestamp;
+
+			if (elapsed > 0) {
+				//calculate fps
+				const fps = 1000 / (elapsed / frames);
+
+				//calculate jitter
+				jitter = Math.abs(lastFps - fps);
+
+				//converge the trigger value exponentialy to match the current refresh rate.
+				trigger = refreshRate > 0 ? (trigger * 0.5) + ((fps / refreshRate) * 0.5) : 0;
+
+				const info = {
+					fps: fps,
+					jitter: jitter,
+					elapsed: elapsed,
+					frames: frames,
+					trigger: trigger,
+				};
+				
+				//reset variables for the next measurement
+				lastTimestamp = now;
+				lastFps = fps;
+				frames = 0;
+				
+				return callback(info);
+			} else {
+				// 2 frames on the same milliseconds, ramp the trigger up
+				trigger *= 1.5;
+			}
+		}
+	}
+}
