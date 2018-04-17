@@ -1,0 +1,25 @@
+{
+  "name": "micro-fps",
+  "version": "1.0.0",
+  "description": "A super lightweight FPS meter, with near zero overhead.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fps",
+    "frames",
+    "per",
+    "seconds",
+    "meter",
+    "measuring",
+    "timing",
+    "tick",
+    "benchmark",
+    "loop",
+    "frame",
+    "ms"
+  ],
+  "author": "Victor N <vitim@vitim.us> (http://vitim.us)",
+  "license": "MIT"
+}
