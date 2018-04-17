@@ -1,25 +1,70 @@
 {
   "name": "micro-fps",
-  "version": "1.0.0",
-  "description": "A super lightweight FPS meter, with near zero overhead.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "fps",
-    "frames",
-    "per",
-    "seconds",
-    "meter",
-    "measuring",
-    "timing",
-    "tick",
-    "benchmark",
-    "loop",
-    "frame",
-    "ms"
+  "version": "0.0.0",
+  "description": "A super lightweight fps meter, with near zero overhead",
+  "main": "dist/cjs/index.js",
+  "browser": "dist/umd/microFps.js",
+  "module": "dist/es/index.js",
+  "jsxnext:main": "dist/es/index.js",
+  "files": [
+    "dist",
+    "src"
   ],
-  "author": "Victor N <vitim@vitim.us> (http://vitim.us)",
-  "license": "MIT"
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "scripts": {
+
+    "prepublish": "npm run build",
+    "precommit": "npm run lint:test",
+    "prepush": "npm run lint:test",
+
+    "release": "release-it",
+
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
+
+    "lint": "npm run lint:eslint && npm run lint:flow",
+    "lint:eslint": "eslint src/*.js",
+    "lint:flow": "flow --color always",
+
+    "test": "jest",
+    "test:coverage": "jest --coverage ",
+    "test:watch": "clear && jest --watch",
+
+    "lint:test": "npm run lint && npm run test:coverage",
+
+    "build": "npm run lint:test && npm run build:cjs && npm run build:es && npm run build:umd",
+    "build:watch": "clear && rimraf dist/cjs && cross-env BABEL_ENV=cjs babel -w src --out-dir dist/cjs",
+
+    "build:es": "rimraf dist/es && cross-env BABEL_ENV=es babel src --out-dir dist/es",
+    "build:cjs": "rimraf dist/cjs && cross-env BABEL_ENV=cjs babel src --out-dir dist/cjs",
+    "build:umd": "rimraf dist/umd && cross-env BABEL_ENV=es rollup -c & cross-env BABEL_ENV=es NODE_ENV=production rollup -c"
+
+  },
+  "keywords": [],
+  "author": "Victor (vitim@vitim.us)",
+  "license": "MIT",
+  "repository": "victornpb/micro-fps",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-flow-strip-types": "^6.18.0",
+    "babel-preset-es2015": "^6.24.1",
+    "coveralls": "^2.13.1",
+    "cross-env": "^5.0.5",
+    "eslint": "^4.6.0",
+    "eslint-config-devine": "^1.7.1",
+    "eslint-plugin-babel": "^4.1.2",
+    "flow-bin": "^0.37.0",
+    "jest": "^20.0.4",
+    "rimraf": "^2.6.1",
+    "release-it": "^2.8.5",
+    "husky": "^0.14.3",
+    "rollup": "^0.39.2",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-bundle-size": "^1.0.1",
+    "rollup-plugin-commonjs": "^8.2.0",
+    "rollup-plugin-uglify": "^2.0.1"
+  }
 }
