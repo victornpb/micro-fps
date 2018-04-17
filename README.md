@@ -1,13 +1,13 @@
 fpsMeter
 ========
 
-A super lightweight fps meter, with near zero overhead.
+#### A super lightweight fps meter, with near zero overhead.
 
 createFpsMeter is a function factory, it returns a new meter.
+A function with closure variables is cheaper than a class instance with public members.
 
 
-
-Usage example
+## Usage example
 
     const REFRESH_RATE = 2; //update twice a second
     
@@ -32,8 +32,8 @@ Callback info object
 
 | property | type    | description                                           |
 |----------|---------|-------------------------------------------------------|
-| fps      | number  | The calculated frames per second                      |
-| jitter   | number  | The absolute difference since the last calculated fps |
-| elapsed  | number  | Milliseconds ellapsed since the last computation      |
+| fps      | float   | The calculated frames per second                      |
+| jitter   | float   | The absolute difference since the last calculated fps |
+| elapsed  | float   | Milliseconds ellapsed since the last computation      |
 | frames   | integer | Number of frames since the last computation           |
-| trigger  | number  | Next computation will happen at this amount of frames |
+| trigger  | float   | Next computation will happen at this amount of frames |
