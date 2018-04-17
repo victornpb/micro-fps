@@ -3,8 +3,8 @@ fpsMeter
 
 #### A super lightweight fps meter, with near zero overhead.
 
-createFpsMeter is a function factory, it returns a new meter.
-A function with closure variables is cheaper than a class instance with public members.
+*createFpsMeter* is a function factory, it returns a new meter.  
+But why not a class? Last time I checked, accessing instance properties was slower than accessing variables on a near closure.
 
 
 ## Usage example
