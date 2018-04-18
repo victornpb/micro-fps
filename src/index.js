@@ -23,7 +23,8 @@
  */
 export default function createFpsMeter(callback, refreshRate = 1) {
   if (typeof callback !== 'function') throw new Error('Callback is not a function');
-  if (typeof refreshRate !== 'number') throw new Error('refreshRate should be a number! e.g. 2 (fps)');
+  if (typeof refreshRate !== 'number' || isNaN(refreshRate) || refreshRate < 0 || refreshRate===Infinity) throw new Error('refreshRate should be a positive number! e.g. 2 (fps)');
+
 
   /** number of frames since last computation */
   let frames = 0;
