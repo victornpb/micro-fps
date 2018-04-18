@@ -28,7 +28,7 @@ describe('validation', () => {
 
   it(`should require a callback`, () => {
     expect(() => {
-      const fpsTick = microFps();
+      microFps();
     }).toThrowError();
   });
 
@@ -43,31 +43,31 @@ describe('validation', () => {
     expect(microFps(mockCallback), 0.5).toBeTruthy();
 
     expect(() => {
-      const fpsTick = microFps(mockCallback, -1);
+      microFps(mockCallback, -1);
     }).toThrowError();
 
     expect(() => {      const mockCallback = jest.fn();
-      const fpsTick = microFps(mockCallback, NaN);
+      microFps(mockCallback, NaN);
     }).toThrowError();
 
     expect(() => {
-      const fpsTick = microFps(mockCallback, null);
+      microFps(mockCallback, null);
     }).toThrowError();
 
     expect(() => {
-      const fpsTick = microFps(mockCallback, {});
+      microFps(mockCallback, {});
     }).toThrowError();
 
     expect(() => {
-      const fpsTick = microFps(mockCallback, Infinity);
+      microFps(mockCallback, Infinity);
     }).toThrowError();
 
     expect(() => {
-      const fpsTick = microFps(mockCallback, -Infinity);
+      microFps(mockCallback, -Infinity);
     }).toThrowError();
 
     expect(() => {
-      const fpsTick = microFps(mockCallback, "foo");
+      microFps(mockCallback, "foo");
     }).toThrowError();
   });
 });
