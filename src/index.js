@@ -39,7 +39,7 @@ export default function createFpsMeter(callback, refreshRate = 1) {
   let jitter = 0;
 
   // use performance.now() or fallback to Date.now() only check on initialization
-  const millis = ('performance' in window && 'now' in window.performance) ? window.performance.now.bind(window.performance) : Date.now.bind(Date);
+  const millis = (typeof performance === 'object' && 'now' in performance) ? performance.now.bind(performance) : Date.now.bind(Date);
 
   return function fpsMeterTick() {
     if (++frames > trigger) {
