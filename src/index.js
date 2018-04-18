@@ -21,18 +21,18 @@
  * @return {function} Returns a function that should be called on every the loop tick
  * @author Victor B - www.vitim.us - github.com/victornpb/fpsMeter
  */
-export default function createFpsMeter(callback, refreshRate = 1) {
+export default function microFps(callback, refreshRate = 1) {
   if (typeof callback !== 'function') throw new Error('Callback is not a function');
   if (typeof refreshRate !== 'number' || isNaN(refreshRate) || refreshRate < 0 || refreshRate===Infinity) throw new Error('refreshRate should be a positive number! e.g. 2 (fps)');
 
 
   /** number of frames since last computation */
-  let frames = 0;
+  let frames = -1;
   /** compute fps at this amount of frames (it will try to match the refresh rate) */
   let trigger = 0;
 
   /** previous timestamp */
-  let lastTimestamp = 0;
+  let lastTimestamp = undefined;
 
   /** last computed fps value */
   let lastFps = 0;
@@ -43,21 +43,28 @@ export default function createFpsMeter(callback, refreshRate = 1) {
   const millis = (typeof performance === 'object' && 'now' in performance) ? performance.now.bind(performance) : Date.now.bind(Date);
 
   return function fpsMeterTick() {
-    if (++frames > trigger) {
+    if (frames >= trigger) {
+      
       const now = millis();
-      if (lastTimestamp === 0) lastTimestamp = now;
+      if (lastTimestamp === undefined) lastTimestamp = now;
       const elapsed = now - lastTimestamp;
 
       if (elapsed > 0) {
         // calculate fps
-        const fps = 1000 / (elapsed / frames);
+        const fps = frames>0 ? 1000 / (elapsed / frames) : 0;
 
         // calculate jitter
         jitter = Math.abs(lastFps - fps);
 
-        // converge the trigger value exponentialy to match the current refresh rate.
-        trigger = refreshRate > 0 ? (trigger * 0.5) + ((fps / refreshRate) * 0.5) : 0;
-
+        if (refreshRate > 0) {
+          // converge the trigger value exponentialy to match the current refresh rate.
+          trigger = (trigger * 0.5) + ((fps / refreshRate) * 0.5);
+          if (trigger < 0) trigger = 0;
+        }
+        else {
+          trigger = 0;
+        }
+        
         const info = {
           fps: fps,
           jitter: jitter,
@@ -71,11 +78,12 @@ export default function createFpsMeter(callback, refreshRate = 1) {
         lastFps = fps;
         frames = 0;
 
-        return callback(info);
+        callback(info);
       } else {
         // 2 frames on the same milliseconds, ramp the trigger up
-        trigger *= 1.5;
+        trigger *= 2;
       }
     }
+    frames++;
   };
 }
