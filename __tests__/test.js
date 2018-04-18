@@ -46,7 +46,7 @@ describe('validation', () => {
       microFps(mockCallback, -1);
     }).toThrowError();
 
-    expect(() => {      const mockCallback = jest.fn();
+    expect(() => {
       microFps(mockCallback, NaN);
     }).toThrowError();
 
@@ -73,7 +73,7 @@ describe('validation', () => {
 });
 
 describe('fps calculation', () => {
-  it('Should be 50fps on the 3rd frame, refresh rate set to 0', (done) => {
+  it('Should be 50fps on the 3rd frame, refresh rate set to 0', () => {
     expect.assertions(1);
 
     mockPerf.timestamp = 1E8;
@@ -83,57 +83,113 @@ describe('fps calculation', () => {
 
     const fpsTick = microFps((info) => {
       expect(info.fps).toBe(FPS);
-      done();
+      // done();
     }, 0);
 
 
     fpsTick();
-    mockPerf.timestamp += FRAMEDURATION; // increment in 20ms (50fps)
+    mockPerf.timestamp += FRAMEDURATION; // increment timestamp
     fpsTick();
-    mockPerf.timestamp += FRAMEDURATION; // increment in 20ms (50fps)
+    mockPerf.timestamp += FRAMEDURATION; // increment timestamp
     fpsTick();
   });
 
-  // it(`should be 50fps`, (done) => {
-  //   mockPerf.timestamp = 1;
 
-  //   const fpsTick = microFps((info) => {
-  //     expect(info.fps).toEqual(50);
-  //     done();
-  //   }, 0);
+  it(`should be 50fps after 100 frames`, () => {
+    expect.assertions(2);
 
-  //   fpsTick();
-  //   mockPerf.timestamp = 1000/50;
-  //   fpsTick();
-  // });
+    mockPerf.timestamp = 1E5;
+
+    const FPS = 50;
+    const DURATION = 2000;
+    const FRAMEDURATION = 1000 / FPS;
+    let i = 0;
+    const fpsTick = microFps((info) => {
+      if (i+1 < (DURATION / FRAMEDURATION)) return;
+      expect(info.fps).toBeGreaterThanOrEqual(FPS - 1);
+      expect(info.fps).toBeLessThanOrEqual(FPS + 1);
+      // done();
+    }, 0);
+
+    for (i = 0; i < (DURATION / FRAMEDURATION); i++) {
+      fpsTick();
+      mockPerf.timestamp += FRAMEDURATION; // increment timestamp
+    }
+  });
 
 
-  // it(`should be 50fps 2`, (done) => {
-  //   expect.assertions(1);
+  it(`should invoke callback the correct number of times (refreshRate=0)`, () => {
+    const mockCallback = jest.fn();
+    // expect.assertions(1);
+
+    mockPerf.timestamp = 1E5;
+
+    const FPS = 60;
+    const DURATION = 5000;
+    const FRAMEDURATION = 1000 / FPS;
+    const REFRESH_RATE = 0;
+
+    const fpsTick = microFps(mockCallback, REFRESH_RATE);
+
+    let ticks = 0;
+    let i = 0;
+    for (i = 0; i < DURATION; i += FRAMEDURATION) {
+      fpsTick();
+      mockPerf.timestamp += FRAMEDURATION; // increment timestamp
+      ticks++;
+    }
+    expect(mockCallback).toHaveBeenCalledTimes(ticks-2);
+  });
+
+
+  it(`should invoke callback the correct number of times (with a refreshRate)`, () => {
+    const mockCallback = jest.fn();
+    expect.assertions(1);
+
+    mockPerf.timestamp = 1E5;
+
+    const FPS = 60;
+    const DURATION = 5000;
+    const FRAMEDURATION = 1000 / FPS;
+    const REFRESH_RATE = 7;
+
+    const fpsTick = microFps(mockCallback, REFRESH_RATE);
+    
+    let ticks = 0;
+    let i = 0;
+    for (i = 0; i < DURATION; i += FRAMEDURATION) {
+      fpsTick();
+      mockPerf.timestamp += FRAMEDURATION; // increment timestamp
+      ticks++;
+    }
+    
+    expect(mockCallback).toHaveBeenCalledTimes((DURATION / (1000/REFRESH_RATE))-1);
+  });
+
+
+  // it(`should be 50fps after 100 frames with 10fps refresh`, () => {
+  //   expect.assertions(2);
 
   //   mockPerf.timestamp = 1E5;
 
   //   const FPS = 50;
-  //   const DURATION = 2000;
+  //   const DURATION = 5000;
   //   const FRAMEDURATION = 1000 / FPS;
 
+  //   let i = 0;
   //   const fpsTick = microFps((info) => {
-  //     // if (mockPerf.timestamp < 1000) return;
-  //     // expect(info.fps).toBeGreaterThanOrEqual(FPS - 1);
-  //     // expect(info.fps).toBeLessThanOrEqual(FPS + 1);
+  //     if (i <= DURATION) {
+  //       expect(info.fps).toBeGreaterThanOrEqual(FPS - 1);
+  //       expect(info.fps).toBeLessThanOrEqual(FPS + 1);
+  //       // done();
+  //     }
+  //   }, 4);
 
-  //     // done();
-  //   }, 0);
-
-
-  //   for (let i = 0; i < (DURATION / FRAMEDURATION); i++) {
+  //   for (i = 0; i <= DURATION; i += FRAMEDURATION) {
   //     fpsTick();
-  //     mockPerf.timestamp += FRAMEDURATION; // increment in 20ms (50fps)
-  //     console.log(mockPerf.timestamp);
+  //     mockPerf.timestamp += FRAMEDURATION; // increment timestamp
   //   }
   // });
-
-
   
 });
 
