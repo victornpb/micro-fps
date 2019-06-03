@@ -19,28 +19,29 @@ JS fiddle Example: https://jsfiddle.net/Victornpb/g8pra2a6/
 ```js
 import microFps from 'micro-fps';
 
-```
+function updatedUIcallback(stats){
+  // Update your UI
+  fps_div.innerHTML = stats.fps.toFixed(2) + " fps"; 
+  console.log(stats);
+}
 
-    const REFRESH_RATE = 2; //update twice a second
-    
-    const fpsTick = createFpsMeter(info=>{
-	    fps_div.innerHTML = info.fps.toFixed(2);
-	    console.log(info);
-    }, REFRESH_RATE);
-    
+const REFRESH_RATE = 2; // update you HUD twice a second (it can be a fraction e.g.: 0.5 will compute every 2 seconds).
+const fpsTick = microFps(updatedUIcallback, REFRESH_RATE); // create a tick function
+
+```
     
 Then call the returned function on every frame of your loop    
-    
-    //game loop
-    setInterval(function loop(){
-        fpsTick();
-        
-        //do stuff
-    
-    }, 1000/60);
-    
+```js    
+// game/animation loop
+setInterval(function loop(){
+    fpsTick(); // call on every frame
+     
+    // Your game/animation logic
+
+}, 1000/60);
+```    
  
-Callback info object
+Callback stats object
 
 | property | type    | description                                           |
 |----------|---------|-------------------------------------------------------|
@@ -60,31 +61,6 @@ Install via [yarn](https://github.com/yarnpkg/yarn)
 or npm
 
 	npm install micro-fps (--save-dev)
-
-
-### configuration
-
-You can pass in extra options as a configuration object (➕ required, ➖ optional, ✏️ default).
-
-```js
-import microFps from 'micro-fps';
-
-```
-
-➖ **property** ( type ) ` ✏️ default `
-<br/> 📝 description
-<br/> ❗️ warning
-<br/> ℹ️ info
-<br/> 💡 example
-
-### methods
-
-#### #name
-
-```js
-microFps
-
-```
 
 ### Examples
 
@@ -106,7 +82,3 @@ The code is available under the [MIT](LICENSE) license.
 ### Contributing
 
 We are open to contributions, see [CONTRIBUTING.md](CONTRIBUTING.md) for more info.
-
-### Misc
-
-This module was created using [generator-module-boilerplate](https://github.com/duivvv/generator-module-boilerplate).
