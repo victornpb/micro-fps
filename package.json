@@ -44,7 +44,7 @@
     "coveralls": "^2.13.1",
     "cross-env": "^5.0.5",
     "eslint": "^4.19.1",
-    "eslint-config-devine": "^1.7.1",
+    "eslint-config-devine": "^3.0.0",
     "eslint-config-google": "^0.9.1",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-jest": "^21.15.0",
