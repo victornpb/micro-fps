@@ -12,6 +12,19 @@
 *createFpsMeter* is a function factory, it returns a new meter.  
 But why not a class? Last time I checked, accessing instance properties was slower than accessing variables on a near closure.
 
+
+### Installation
+
+[Yarn](https://github.com/yarnpkg/yarn)
+
+	yarn add micro-fps
+
+NPM
+
+	npm install micro-fps
+  
+If you don't use a package manager, you can [access `micro-fps` via unpkg (CDN)](https://unpkg.com/micro-fps/), download the source, or point your package manager to the url.
+
 ### Usage
 
 JS fiddle Example: https://jsfiddle.net/Victornpb/g8pra2a6/
@@ -52,23 +65,12 @@ Callback stats object
 | trigger  | float   | Next computation will happen at this amount of frames |
 
 
-### Installation
-
-[Yarn](https://github.com/yarnpkg/yarn)
-
-	yarn add micro-fps
-
-NPM
-
-	npm install micro-fps
 
 ### Examples
 
 See [`example`](example/script.js) folder or the [runkit](https://runkit.com/victornpb/micro-fps) example.
 
 ### Builds
-
-If you don't use a package manager, you can [access `micro-fps` via unpkg (CDN)](https://unpkg.com/micro-fps/), download the source, or point your package manager to the url.
 
 `micro-fps` is compiled as a collection of [CommonJS](http://webpack.github.io/docs/commonjs.html) modules & [ES2015 modules](http://www.2ality.com/2014/0
   -9/es6-modules-final.html) for bundlers that support the `jsnext:main` or `module` field in package.json (Rollup, Webpack 2)
