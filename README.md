@@ -54,13 +54,13 @@ Callback stats object
 
 ### Installation
 
-Install via [yarn](https://github.com/yarnpkg/yarn)
+[Yarn](https://github.com/yarnpkg/yarn)
 
-	yarn add micro-fps (--dev)
+	yarn add micro-fps
 
-or npm
+NPM
 
-	npm install micro-fps (--save-dev)
+	npm install micro-fps
 
 ### Examples
 
