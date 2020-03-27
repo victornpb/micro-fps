@@ -50,7 +50,7 @@
     "eslint-plugin-jest": "^21.15.0",
     "flow-bin": "^0.102.0",
     "husky": "^0.14.3",
-    "jest": "^24.8.0",
+    "jest": "^25.2.3",
     "release-it": "^2.8.5",
     "rimraf": "^2.6.1",
     "rollup": "^0.39.2",
