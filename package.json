@@ -51,7 +51,7 @@
     "flow-bin": "^0.102.0",
     "husky": "^0.14.3",
     "jest": "^24.8.0",
-    "release-it": "^2.8.5",
+    "release-it": "^14.6.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.39.2",
     "rollup-plugin-babel": "^3.0.2",
